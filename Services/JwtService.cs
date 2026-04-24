@@ -28,7 +28,7 @@ public class JwtService
 
         var claims = new[]
         {
-            new Claim(ClaimTypes.NameIdentifier, userId.ToString()), // 🔥 REQUIRED
+            new Claim(ClaimTypes.NameIdentifier, userId.ToString()), 
             new Claim(ClaimTypes.Email, email)
         };
 
