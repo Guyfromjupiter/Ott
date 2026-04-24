@@ -18,7 +18,8 @@ public class ProfileService
         var profile = new Profile
         {
             UserId = userId,
-            Name = dto.Name
+            Name = dto.Name,
+            IsKidsProfile = false
         };
 
         return await _profileRepo.AddAsync(profile);

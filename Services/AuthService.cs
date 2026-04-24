@@ -13,22 +13,24 @@ public class AuthService
         _userRepo = userRepo;
         _jwtService = jwtService;
     }
+public async Task<string?> LoginAsync(LoginRequestDTO dto)
+{
+    if (string.IsNullOrWhiteSpace(dto.Email) ||
+        string.IsNullOrWhiteSpace(dto.Password))
+        return null;
 
-    public async Task<string?> LoginAsync(LoginRequestDTO dto)
-    {
-        var user = await _userRepo.GetByEmailAsync(dto.Email);
+    var user = await _userRepo.GetByEmailAsync(dto.Email);
 
-        if (user == null)
-            return null;
+    if (user == null)
+        return null;
 
-        bool valid = BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash);
+    bool valid = BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash);
 
-        if (!valid)
-            return null;
+    if (!valid)
+        return null;
 
-       
-        return _jwtService.GenerateToken(user.UserId, user.Email!);
-    }
+    return _jwtService.GenerateToken(user.UserId, user.Email!);
+}
 
     public async Task<User> RegisterAsync(RegisterRequestDTO dto)
     {

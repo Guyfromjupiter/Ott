@@ -3,13 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Ott.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 🔹 Controllers
+//  Controllers
 builder.Services.AddControllers();
 
-// 🔐 JWT Configuration
+//  JWT Configuration
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 
 var key = jwtSettings["Key"]
@@ -36,27 +37,39 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
-// 🔹 AutoMapper
+//  AutoMapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-// 🔹 DbContext
+//  DbContext
 builder.Services.AddDbContext<OttContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("OttsConections")));
 
-// 🔹 Repositories
+//  Repositories
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<JwtService>();
+
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<ProfileService>();
+builder.Services.AddScoped<MovieService>();
+builder.Services.AddScoped<RatingService>();
+builder.Services.AddScoped<WatchlistService>();
+builder.Services.AddScoped<PaymentService>();
+
 builder.Services.AddScoped<IMovieRepository, SqlMovieRepo>();
 builder.Services.AddScoped<IPaymentRepository, SqlpaymentRepo>();
 builder.Services.AddScoped<IProfileRepo, SqlProfileRepo>();
 builder.Services.AddScoped<IRatingRepository, SqlRatingRepo>();
 builder.Services.AddScoped<IWatchlistRepo, SqlWatchlistRepo>();
+builder.Services.AddScoped<IUserRepository, SqlUserRepo>();
+builder.Services.AddScoped<JwtService>();
 
-// 🔥 CORS CONFIG
+//  CORS CONFIG
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
         policy
-            .WithOrigins("http://localhost:3000") // change if needed
+            .WithOrigins("http://localhost:5272") // change if needed
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -64,7 +77,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// 🔥 Middleware pipeline
+//  Middleware pipeline
 
 app.UseHttpsRedirection();
 

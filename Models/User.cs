@@ -14,7 +14,7 @@ namespace Ott.Models
         [Required]
         public string? PasswordHash { get; set; }
         [Required]
-        public DateTime? CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public List<Profile> Profiles {get; set;} = new();
     }
 
